@@ -1,0 +1,19 @@
+h1 {
+  font-family: 'Museo-Sans-Cyr Med';
+  font-size: 3.6em;
+  padding-bottom: 10px;
+}
+
+h5 {
+  display: inline;
+  font-family: 'Museo-Sans-Cyr Reg';
+  font-size: 1em;
+}
+
+a {
+  cursor: pointer;
+
+  &:hover {
+    color: white;
+  }
+}

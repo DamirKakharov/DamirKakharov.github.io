@@ -1,0 +1,39 @@
+@media only screen 
+and (min-device-width : 375px) 
+and (max-device-width : 667px) {
+    
+  .culm {
+    display: flex;
+    flex-flow: column;
+  }
+
+  .showcase, .description, .displays, .blocks, .intro, .right, footer{
+    @extend .culm;
+    width: 100%;
+  }
+  
+  .right {
+    padding: 0;
+  }
+
+  .social{
+    visibility: hidden;
+  }
+
+  .about, .quich-links, .later-posts, .contact, .contact__item{
+    width: 100%;
+    padding-bottom: 16px;
+  }
+
+  .contact__item {
+    width: 100%;
+
+  }
+
+  .blocks .block {
+    width: 100%;
+    &__image {
+      width: 50vw;
+    }
+  }
+}

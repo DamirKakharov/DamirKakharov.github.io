@@ -1,0 +1,413 @@
+@import "primary/primary";
+body {
+  font-family: 'Museo-Sans-Cyr';
+  transition: ease;
+}
+
+header {
+  background: linear-gradient(#ef4c2a, #ef9004);
+}
+
+.logo {
+  padding-top: 1em;
+}
+
+.about-list {
+  text-align: end;
+
+  &__item {
+    display: inline;
+    padding-left: 1em;
+  }
+  &__link {
+    color: $pink-text;
+
+    &_button {
+      padding: 8px 20px;
+      border-radius: 5px;
+      background: white;
+
+      &:hover {
+        color: $orange;
+      }
+    }
+
+  }
+}
+
+.nav_under-logo {
+  color: $pink-text;
+  margin-right: -8px;
+}
+
+.nav-list {
+  color: $gray-text;
+  text-align: end;
+
+  &__item {
+    display: inline;
+    padding-left: 1.2em;
+    font-size: 1.1em;
+  }
+  &__link {
+    color: white;
+  }
+}
+
+.news {
+  color: white;
+  font-weight: 300;
+
+  &__subtitle{
+    font-size: 1.2em;
+    font-weight: 300;
+  }
+
+  &__link {
+    display: block;
+    color: white;
+    margin-top: 36px;
+    padding: 16px 0;
+
+    &::after {
+      content: "→";
+      padding-left: 8px;
+    }
+  }
+  
+  &__nav {
+    display: flex;
+    align-items: center;
+  }
+  
+}
+
+.slick_arrow {
+  display: inline;
+  height: 35px;
+  width: 35px;
+  font-size: 1.3em;
+  background: transparent;
+  border: 1px solid wheat;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+}
+
+.slick_dots_con_news {
+  display: inline;
+
+  .slick-dots{
+    display: inline;
+    position: relative;
+    bottom: 0;
+
+    & li{
+      margin: 0px 2px;
+  
+      & button:before{
+        color: white;
+        width: 20px;
+        height: 20px;
+        font-size: 40px;
+      }
+    }
+  }
+}
+
+.card {
+  height: auto;
+  margin: 4vw 16px;
+  border: none;
+  border-radius: 10px;
+  color: $gray-text;
+  box-shadow: 0px 0px 37px -8px rgba(0,0,0,0.7);
+
+  &__block {
+    margin: 10px;
+  }
+
+  &__tag {
+    display: inline-block;
+    padding: 2px 5px;
+    font-size: 0.9em;
+    font-family: "Museo-Sans-Cyr Reg";
+    color: white;
+    background: linear-gradient(to right, #ef4c2a, #f89604);
+  }
+ 
+}
+
+.news-card {
+  .card__title {
+    text-transform: uppercase;
+    font-family: 'Museo-Sans-Cyr Bold';
+    font-size: 0.9em;
+  }
+
+  &:hover {
+    background-image: url(../img/bg.png);
+    box-shadow:0 0 0 128px rgba(0, 0, 0, 0.5) inset;
+    color: white;
+  }
+}
+
+
+.projects {
+  .card {
+    border: none;
+    border-radius: 0;
+    box-shadow: 0 0 0 0;
+    &__title {
+      font-family: 'Museo-Sans-Cyr Med';
+      color: $gray-text; 
+    }
+  }
+
+  .card-row {
+    padding-top: 6px;
+    font-family: 'Museo-Sans-Cyr Reg';
+    font-size: 0.9em;
+  }
+
+  td {
+    padding-right: 8px;
+    margin: 0;
+    
+    &:first-child{
+      color: $light-gray-text;
+    }
+  }
+}
+
+.project {
+  &__subtitle {
+    @extend .news__subtitle;
+    color: $light-gray-text;
+  }
+
+  &__link {
+    @extend .news__link;
+    color: $orange;
+
+    &:hover {
+      color: $orange;
+    }
+  }
+
+  &__nav {
+    display: flex;
+    flex-flow: column;
+    position: absolute;
+    right: 10vw;
+  }
+
+}
+.card, .project {
+  border: none;
+}
+
+.slick_dots_con_project {
+  @extend .slick_dots_con_news;
+  display: block;
+}
+
+.video-blocks {
+  border-radius: 5px;
+  background: $bg-video-block;
+  box-shadow: 0 0px 45px 11px rgba(0,0,0,0.3);
+}
+
+.video-block-left {
+  padding: 60px;
+  &__title {
+    color: white;
+    font-size: 2.9em;
+    line-height: 1em;
+  }
+  
+  &__subtitle {
+    color: $light-gray-text;
+  }
+
+  &__link {
+    @extend .project__link;
+  }
+}
+
+.modal-dialog {
+  max-width: 800px;
+  margin: 30px auto;
+}
+
+.modal-body {
+  position:relative;
+  padding:0px;
+}
+.close {
+  position:absolute;
+  right:-30px;
+  top:0;
+  z-index:999;
+  font-size:2rem;
+  font-weight: normal;
+  color:#fff;
+  opacity:1;
+
+}
+
+.video-block-right {
+  position: inherit;
+  width: 100%;
+  height: 100%;
+  padding: 90px;
+  color: white;
+  margin: 0 auto;
+  // background-image: url(../img/video.png);
+  // box-shadow: 0 0 0 128px rgba(0,0,0,0.5) inset;
+  
+  &__img {
+    width: 100%;
+    height: 100%;
+    padding: 60px;
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  &__tag {
+    @extend .card__tag;
+  }
+  
+  &__title {
+    font-size: 2.5rem;
+    line-height: 3.5rem;
+    cursor: pointer;
+  }
+}
+
+
+.record {
+  padding: 60px 50px 60px 10px;
+   &__title {
+    @extend .video-block-left__title;
+    color: black;
+   }
+
+   &__subtitle {
+    @extend .video-block-left__subtitle;
+ 
+   }
+}
+
+.comment {
+  display: flex;
+  padding-top: 20px;
+
+  &__about {
+    flex-shrink: 0;
+    margin-right: 16px;
+  }
+
+  &__title {
+    @extend .card__title;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    font-family: 'Museo-Sans-Cyr Med';
+    font-size: 0.9em;
+  }
+
+  &__text {
+    font-size: 1em;
+    color: $gray-text;
+  }
+
+  &__img {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+  }
+
+  &__link {
+    @extend .project__link;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    padding-right: 60px;
+  }
+}
+
+.row {
+  width: 100%;
+}
+
+.form {
+  padding: 80px 0;
+  text-align: center;
+  background: $bg-footer;
+  box-shadow: inset 0px 17px 62px 15px rgba(0,0,0,0.1);
+ 
+
+  &__title {
+    @extend .card__title;
+    font-size: 3.1em;;
+  }
+
+  &__subtitle {
+    @extend .video-block-left__subtitle;
+    margin-bottom: 16px;
+  }
+
+  input {
+    width: 260px;
+    height: 42px;
+    padding: 0 20px;
+    margin-bottom: 10px;
+    margin-right: 0;
+    border: none;
+    border-radius: 5px;
+    background: #fff;
+    color: $light-gray-text;
+    &::placeholder {
+      color: $light-gray-text;
+    }
+  }
+
+  &__button {
+    width: 180px;
+    height: 42px;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    background: $orange;
+    box-shadow: 0 9px 30.2px 0.8px rgba(248,149,5,.45);
+  }
+}
+
+.footer {
+  padding: 10px 0;
+  background: $bg-footer;
+  border: 1px solid gray;
+  color: $light-gray-text;
+}
+
+.footer-nav{
+  text-align: center;
+
+  &__item {
+    display: inline;
+    padding-left: 1em;
+  }
+  &__link {
+    color: $light-gray-text;
+  }
+}
+
+.down {
+  padding: 10px 0;
+  color: $light-gray-text;
+  background: $bg-footer;
+  &__title {
+    text-align: center;
+  }
+}

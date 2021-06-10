@@ -1,0 +1,47 @@
+Посмотрите код страницы и вывод в консоль браузера.
+
+<script src="shri-async-hw.js"></script>
+
+<script>
+  const {
+    AsyncArray,
+    add,
+    subtract,
+    multiply,
+    divide,
+    mod,
+    less,
+    equal,
+    lessOrEqual,
+    sqrt,
+  } = Homework;
+
+  const promisify = (func, ...args) =>
+    new Promise((res) => func(...args, (result) => res(result)));
+
+  const arr = new AsyncArray([1, 1, 8, 8, 8, 8, 8, 8]);
+
+  async function getSumOddsNumber(array, cb) {
+    let sum = 0;
+
+    const length = await promisify(array.length);
+
+    for (
+      let i = 0;
+      await promisify(less, i, length);
+      i = await promisify(add, i, 1)
+    ) {
+      const item = await promisify(array.get, i);
+
+      const isOdd = await promisify(mod, item, 2);
+
+      if (isOdd) {
+        sum = await promisify(add, sum, item);
+      }
+    }
+
+    cb(sum);
+  }
+
+  promisify(getSumOddsNumber, arr).then((res) => console.log(res));
+</script>

@@ -7,9 +7,34 @@
     <title>Document</title>
   </head>
   <body>
-    file3
     <script>
-      console.log("3");
+      const arr = [5, 1, 3, 4, 2];
+      ////////  // 0, 1, 2, 3, 4
+
+      const sort = (arr = []) => {
+        if (arr.length < 2) {
+          return arr;
+        }
+
+        let borderIndex = arr.length - 2;
+
+        for (let i = 0; i < arr.length - 2; i++) {
+          for (let j = borderIndex; j < arr.length - 1; j++) {
+            const tempValue = arr[j];
+
+            if (arr[j] > arr[j + 1]) {
+              arr[j] = arr[j + 1];
+              arr[j + 1] = tempValue;
+            }
+
+            borderIndex--;
+          }
+        }
+
+        return arr;
+      };
+
+      console.log(sort(arr));
     </script>
   </body>
 </html>

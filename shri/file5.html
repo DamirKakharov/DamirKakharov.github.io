@@ -56,36 +56,18 @@
         children: [],
       };
 
-      const func1 = (data, counter = 0) => {
-        const arr = [];
-        const res = [];
-
-        for (let i = 0; i < data.length; i++) {
-          const element = data[i];
-
-          res.push(element.value);
-
-          if (element.children) {
-            arr.push(element.children);
-          }
-        }
-
-        if (arr.length) {
-          res.push(...func1(arr, counter));
-        }
-        return res;
-        //
-      };
-
       const func = (data, counter = 0) => {
         const arr = [];
         const res = [];
 
-        res.push(data.value);
+        if (data.value) {
+          res.push(data.value);
+        }
 
-        for (let i = 0; i < data.children.length; i++) {
-          const element = data.children[i];
-          console.log("element:", element);
+        const interator = Array.isArray(data) ? data : data.children;
+
+        for (let i = 0; i < interator.length; i++) {
+          const element = interator[i];
 
           res.push(element.value);
 
@@ -95,7 +77,7 @@
         }
 
         if (arr.length) {
-          res.push(...func1(arr, counter));
+          res.push(...func(arr, counter));
         }
 
         return res;

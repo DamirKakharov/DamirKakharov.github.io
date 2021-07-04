@@ -7,9 +7,74 @@
     <title>Document</title>
   </head>
   <body>
-    file4
     <script>
-      console.log("4");
+      const test = {
+        value: 1,
+        children: [
+          {
+            value: 2,
+            children: [
+              {
+                value: 3,
+              },
+              {
+                value: 4,
+              },
+            ],
+          },
+          {
+            value: 5,
+            children: [
+              {
+                value: 6,
+              },
+              {
+                value: 7,
+              },
+            ],
+          },
+          {
+            value: 8,
+          },
+        ],
+      };
+
+      const test2 = {
+        value: 1,
+        children: [
+          {
+            value: 2,
+          },
+          {
+            value: 3,
+          },
+        ],
+      };
+
+      const type = {
+        value: 8,
+        children: [],
+      };
+
+      const func = (data, counter = []) => {
+        if (Array.isArray(data)) {
+          for (let i = 0; i < data.length; i++) {
+            func(data[i], counter);
+          }
+
+          return counter;
+        }
+
+        counter.push(data.value);
+
+        if (data.children) {
+          return func(data.children, counter);
+        }
+
+        return counter;
+      };
+
+      console.log(func(test));
     </script>
   </body>
 </html>

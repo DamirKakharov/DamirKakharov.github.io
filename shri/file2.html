@@ -7,9 +7,32 @@
     <title>Document</title>
   </head>
   <body>
-    file2
     <script>
-      console.log("2");
+      const arr = [5, 3, 4, 1, 2];
+
+      const sort = (arr = []) => {
+        if (arr.length < 2) {
+          return arr;
+        }
+
+        for (let i = 0; i < arr.length - 1; i++) {
+          let maxIndex = 0;
+
+          for (let j = 1; j < arr.length - i; j++) {
+            if (arr[maxIndex] < arr[j]) {
+              maxIndex = j;
+            }
+          }
+
+          const value = arr[maxIndex];
+
+          arr[maxIndex] = arr[arr.length - 1 - i];
+          arr[arr.length - 1 - i] = value;
+        }
+        return arr;
+      };
+
+      console.log(sort(arr));
     </script>
   </body>
 </html>

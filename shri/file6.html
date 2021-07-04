@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const arg = "{[0]}";
+
+      const chars = {
+        "{": "}",
+        "(": ")",
+        "[": "]",
+      };
+      const endd = {
+        "}": "{",
+        ")": "(",
+        "]": "[",
+      };
+
+      const replaceString = (arg) => {
+        const stack = [];
+
+        for (let i = 0; i < arg.length; i++) {
+          const element = arg[i];
+
+          if (chars[element]) {
+            stack.push(element);
+          } else if (endd[element]) {
+            if (stack[stack.length - 1] === endd[element]) {
+              stack.pop();
+            } else {
+              return false;
+            }
+          }
+        }
+
+        return !stack.length;
+
+        console.log(stack);
+      };
+
+      console.log(replaceString(arg));
+      console.log(replaceString("[{]}"));
+      console.log(replaceString("{"));
+    </script>
+  </body>
+</html>

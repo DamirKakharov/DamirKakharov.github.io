@@ -28,7 +28,10 @@
 
             if (tempValue < arr[j + 1]) {
               arr[j] = tempValue;
-            } else if (j === arr.length - 2) {
+              j = arr.length + 2;
+            }
+
+            if (j === arr.length - 2) {
               arr[arr.length - 1] = tempValue;
             }
 

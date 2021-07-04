@@ -24,8 +24,13 @@
           for (let j = borderIndex; j < arr.length - 1; j++) {
             if (tempValue > arr[j + 1]) {
               arr[j] = arr[j + 1];
-            } else {
+              arr[j + 1] = 0;
+            }
+
+            if (tempValue < arr[j + 1]) {
               arr[j] = tempValue;
+            } else if (j === arr.length - 2) {
+              arr[arr.length - 1] = tempValue;
             }
 
             borderIndex--;

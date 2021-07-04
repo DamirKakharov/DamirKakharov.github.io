@@ -7,9 +7,100 @@
     <title>Document</title>
   </head>
   <body>
-    file5
     <script>
-      console.log("5");
+      const test = {
+        value: 1,
+        children: [
+          {
+            value: 2,
+            children: [
+              {
+                value: 5,
+              },
+              {
+                value: 6,
+              },
+            ],
+          },
+          {
+            value: 3,
+            children: [
+              {
+                value: 7,
+              },
+              {
+                value: 8,
+              },
+            ],
+          },
+          {
+            value: 4,
+          },
+        ],
+      };
+
+      const test2 = {
+        value: 1,
+        children: [
+          {
+            value: 2,
+          },
+          {
+            value: 3,
+          },
+        ],
+      };
+
+      const type = {
+        value: 8,
+        children: [],
+      };
+
+      const func1 = (data, counter = 0) => {
+        const arr = [];
+        const res = [];
+
+        for (let i = 0; i < data.length; i++) {
+          const element = data[i];
+
+          res.push(element.value);
+
+          if (element.children) {
+            arr.push(element.children);
+          }
+        }
+
+        if (arr.length) {
+          res.push(...func1(arr, counter));
+        }
+        return res;
+      };
+
+      const func = (data, counter = 0) => {
+        const arr = [];
+        const res = [];
+
+        res.push(data.value);
+
+        for (let i = 0; i < data.children.length; i++) {
+          const element = data.children[i];
+          console.log("element:", element);
+
+          res.push(element.value);
+
+          if (element.children) {
+            arr.push(...element.children);
+          }
+        }
+
+        if (arr.length) {
+          res.push(...func1(arr, counter));
+        }
+
+        return res;
+      };
+
+      console.log(func(test));
     </script>
   </body>
 </html>

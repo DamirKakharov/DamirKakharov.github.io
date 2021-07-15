@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <title>Document</title>
+    <link href="product.css" rel="stylesheet" />
+    <script>
+      /**
+       * Лимит на число счетчиков в одном запросе
+       *
+       * @type {Number}
+       */
+      var MAX_BATCH_COUNTERS = 42;
+
+      /**
+       * Интервал в миллисекундах, в течение которого счётчики склеиваются
+       *
+       * @type {Number}
+       */
+      var COUNTERS_BATCH_TIMEOUT = 15;
+
+      function Counter() {
+        this.guid = "";
+        this.reqid = "";
+        this.page = "";
+        this.additional = {};
+
+        this._inited = false;
+        this._indexes = {};
+        this._countersBatchData = [];
+        this._counterTimerId = null;
+
+        this.counterUrl = "https://shri.yandex/hw/stat/send";
+      }
+
+      Counter.prototype.init = function (guid, reqid, page) {
+        if (guid && reqid && page) {
+          this.guid = guid;
+          this.reqid = reqid;
+          this.page = page;
+
+          this._inited = true;
+        }
+      };
+
+      Counter.prototype.setAdditionalParams = function (additionalParams) {
+        this.additional = Object.assign({}, additionalParams);
+      };
+
+      /**
+       * Отправка счётчика. Основной транспорт - sendBeacon, запасной - XMLHttpRequest. Быстро поступающие одиночные события
+       * накапливаются и отправляются пачками по MAX_BATCH_COUNTERS штук.
+       *
+       * @param {String} name
+       * @param {Number} value
+       */
+      Counter.prototype.send = function (name, value) {
+        if (!this._inited) {
+          console.warn("counter is not inited");
+
+          return;
+        }
+
+        clearTimeout(this._counterTimerId);
+
+        if (!this._indexes[name]) {
+          this._indexes[name] = 0;
+        }
+
+        var counterData = {
+            counterId: this.guid,
+            requestId: this.reqid,
+            page: this.page,
+            name: name,
+            value: value,
+            index: this._indexes[name],
+            additional: this.additional,
+          },
+          self = this;
+
+        this._countersBatchData.push(counterData);
+
+        this._indexes[name]++;
+
+        if (this._countersBatchData.length < MAX_BATCH_COUNTERS) {
+          this._counterTimerId = setTimeout(function () {
+            self.sendBatchRequest();
+          }, COUNTERS_BATCH_TIMEOUT);
+        } else {
+          sendBatchRequest();
+        }
+      };
+
+      Counter.prototype.sendBatchRequest = function () {
+        var data = JSON.stringify(this._countersBatchData);
+
+        this._countersBatchData = [];
+        this._counterTimerId = null;
+
+        var sendBeaconPostAvailable = navigator.sendBeacon,
+          sendBeaconResult =
+            sendBeaconPostAvailable &&
+            navigator.sendBeacon(
+              this.counterUrl,
+              new Blob([data], { type: "application/json" })
+            );
+
+        if (!sendBeaconResult) {
+          var xhr = new XMLHttpRequest();
+          xhr.open("POST", this.counterUrl);
+          xhr.send(data);
+        }
+      };
+    </script>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <header class="site-header sticky-top py-1">
+      <nav
+        class="container d-flex flex-column flex-md-row justify-content-between"
+      >
+        <a class="py-2" href="#" aria-label="Product">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            class="d-block mx-auto"
+            role="img"
+            viewBox="0 0 24 24"
+          >
+            <title>Product</title>
+            <circle cx="12" cy="12" r="10" />
+            <path
+              d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83m13.79-4l-5.74 9.94"
+            />
+          </svg>
+        </a>
+        <a class="py-2 d-none d-md-inline-block" href="#">Tour</a>
+        <a class="py-2 d-none d-md-inline-block" href="#">Product</a>
+        <a class="py-2 d-none d-md-inline-block" href="#">Features</a>
+        <a class="py-2 d-none d-md-inline-block" href="#">Enterprise</a>
+        <a class="py-2 d-none d-md-inline-block" href="#">Support</a>
+        <a class="py-2 d-none d-md-inline-block" href="#">Pricing</a>
+        <a class="py-2 d-none d-md-inline-block" href="#">Cart</a>
+      </nav>
+    </header>
+
+    <main>
+      <div
+        class="
+          position-relative
+          overflow-hidden
+          p-3 p-md-5
+          m-md-3
+          text-center
+          bg-light
+        "
+      >
+        <div class="col-md-5 p-lg-5 mx-auto my-5">
+          <h1 class="display-4 fw-normal">Punny headline</h1>
+          <p class="lead fw-normal">
+            And an even wittier subheading to boot. Jumpstart your marketing
+            efforts with this example based on Apple’s marketing pages.
+          </p>
+          <a class="btn btn-outline-secondary" id="coming-soon-button" href="#"
+            >Coming soon</a
+          >
+        </div>
+        <div class="product-device shadow-sm d-none d-md-block"></div>
+        <div
+          class="product-device product-device-2 shadow-sm d-none d-md-block"
+        ></div>
+      </div>
+
+      <div class="d-md-flex flex-md-equal w-100 my-md-3 ps-md-3">
+        <div
+          class="
+            bg-dark
+            me-md-3
+            pt-3
+            px-3
+            pt-md-5
+            px-md-5
+            text-center text-white
+            overflow-hidden
+          "
+        >
+          <div class="my-3 py-3">
+            <h2 class="display-5">Another headline</h2>
+            <p class="lead">And an even wittier subheading.</p>
+          </div>
+          <div
+            class="bg-light shadow-sm mx-auto"
+            style="width: 80%; height: 300px; border-radius: 21px 21px 0 0"
+          ></div>
+        </div>
+        <div
+          class="
+            bg-light
+            me-md-3
+            pt-3
+            px-3
+            pt-md-5
+            px-md-5
+            text-center
+            overflow-hidden
+          "
+        >
+          <div class="my-3 p-3">
+            <h2 class="display-5">Another headline</h2>
+            <p class="lead">And an even wittier subheading.</p>
+          </div>
+          <div
+            class="bg-dark shadow-sm mx-auto"
+            style="width: 80%; height: 300px; border-radius: 21px 21px 0 0"
+          ></div>
+        </div>
+      </div>
+
+      <div class="d-md-flex flex-md-equal w-100 my-md-3 ps-md-3">
+        <div
+          class="
+            bg-light
+            me-md-3
+            pt-3
+            px-3
+            pt-md-5
+            px-md-5
+            text-center
+            overflow-hidden
+          "
+        >
+          <div class="my-3 p-3">
+            <h2 class="display-5">Another headline</h2>
+            <p class="lead">And an even wittier subheading.</p>
+          </div>
+          <div
+            class="bg-dark shadow-sm mx-auto"
+            style="width: 80%; height: 300px; border-radius: 21px 21px 0 0"
+          ></div>
+        </div>
+        <div
+          class="
+            bg-primary
+            me-md-3
+            pt-3
+            px-3
+            pt-md-5
+            px-md-5
+            text-center text-white
+            overflow-hidden
+          "
+        >
+          <div class="my-3 py-3">
+            <h2 class="display-5">Another headline</h2>
+            <p class="lead">And an even wittier subheading.</p>
+          </div>
+          <div
+            class="bg-light shadow-sm mx-auto"
+            style="width: 80%; height: 300px; border-radius: 21px 21px 0 0"
+          ></div>
+        </div>
+      </div>
+
+      <div class="d-md-flex flex-md-equal w-100 my-md-3 ps-md-3">
+        <div
+          class="
+            bg-light
+            me-md-3
+            pt-3
+            px-3
+            pt-md-5
+            px-md-5
+            text-center
+            overflow-hidden
+          "
+        >
+          <div class="my-3 p-3">
+            <h2 class="display-5">Another headline</h2>
+            <p class="lead">And an even wittier subheading.</p>
+          </div>
+          <div
+            class="bg-body shadow-sm mx-auto"
+            style="width: 80%; height: 300px; border-radius: 21px 21px 0 0"
+          ></div>
+        </div>
+        <div
+          class="
+            bg-light
+            me-md-3
+            pt-3
+            px-3
+            pt-md-5
+            px-md-5
+            text-center
+            overflow-hidden
+          "
+        >
+          <div class="my-3 py-3">
+            <h2 class="display-5">Another headline</h2>
+            <p class="lead">And an even wittier subheading.</p>
+          </div>
+          <div
+            class="bg-body shadow-sm mx-auto"
+            style="width: 80%; height: 300px; border-radius: 21px 21px 0 0"
+          ></div>
+        </div>
+      </div>
+
+      <div class="d-md-flex flex-md-equal w-100 my-md-3 ps-md-3">
+        <div
+          class="
+            bg-light
+            me-md-3
+            pt-3
+            px-3
+            pt-md-5
+            px-md-5
+            text-center
+            overflow-hidden
+          "
+        >
+          <div class="my-3 p-3">
+            <h2 class="display-5">Another headline</h2>
+            <p class="lead">And an even wittier subheading.</p>
+          </div>
+          <div
+            class="bg-body shadow-sm mx-auto"
+            style="width: 80%; height: 300px; border-radius: 21px 21px 0 0"
+          ></div>
+        </div>
+        <div
+          class="
+            bg-light
+            me-md-3
+            pt-3
+            px-3
+            pt-md-5
+            px-md-5
+            text-center
+            overflow-hidden
+          "
+        >
+          <div class="my-3 py-3">
+            <h2 class="display-5">Another headline</h2>
+            <p class="lead">And an even wittier subheading.</p>
+          </div>
+          <div
+            class="bg-body shadow-sm mx-auto"
+            style="width: 80%; height: 300px; border-radius: 21px 21px 0 0"
+          ></div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="container py-5">
+      <div class="row">
+        <div class="col-12 col-md">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            class="d-block mb-2"
+            role="img"
+            viewBox="0 0 24 24"
+          >
+            <title>Product</title>
+            <circle cx="12" cy="12" r="10" />
+            <path
+              d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83m13.79-4l-5.74 9.94"
+            />
+          </svg>
+          <small class="d-block mb-3 text-muted">&copy; 2017–2021</small>
+        </div>
+        <div class="col-6 col-md">
+          <h5>Features</h5>
+          <ul class="list-unstyled text-small">
+            <li><a class="link-secondary" href="#">Cool stuff</a></li>
+            <li><a class="link-secondary" href="#">Random feature</a></li>
+            <li><a class="link-secondary" href="#">Team feature</a></li>
+            <li><a class="link-secondary" href="#">Stuff for developers</a></li>
+            <li><a class="link-secondary" href="#">Another one</a></li>
+            <li><a class="link-secondary" href="#">Last time</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-md">
+          <h5>Resources</h5>
+          <ul class="list-unstyled text-small">
+            <li><a class="link-secondary" href="#">Resource name</a></li>
+            <li><a class="link-secondary" href="#">Resource</a></li>
+            <li><a class="link-secondary" href="#">Another resource</a></li>
+            <li><a class="link-secondary" href="#">Final resource</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-md">
+          <h5>Resources</h5>
+          <ul class="list-unstyled text-small">
+            <li><a class="link-secondary" href="#">Business</a></li>
+            <li><a class="link-secondary" href="#">Education</a></li>
+            <li><a class="link-secondary" href="#">Government</a></li>
+            <li><a class="link-secondary" href="#">Gaming</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-md">
+          <h5>About</h5>
+          <ul class="list-unstyled text-small">
+            <li><a class="link-secondary" href="#">Team</a></li>
+            <li><a class="link-secondary" href="#">Locations</a></li>
+            <li><a class="link-secondary" href="#">Privacy</a></li>
+            <li><a class="link-secondary" href="#">Terms</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+      integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+      integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+      crossorigin="anonymous"
+    ></script>
+
+    <script src="./index.js"></script>
+  </body>
+</html>

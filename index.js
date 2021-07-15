@@ -21,7 +21,7 @@ counter.send(
   performance.timing.responseEnd - performance.timing.requestStart
 );
 
-counter.send("language", navigator.language);
+console.log(navigator.language);
 
 counter.send("connection-type", navigator.connection.type);
 
